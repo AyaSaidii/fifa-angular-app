@@ -1,1 +1,75 @@
-<p>dashboard-component works!</p>
+<div class="dashboard-container">
+    <div class="header-section">
+        <p>Welcome back, Coach.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <div class="icon">🏆</div>
+            <div class="info">
+                <h3>Teams</h3>
+                <span class="number">{{totalTeams}}</span>
+            </div>
+        </div>
+        <div class="stat-card green">
+            <div class="icon">👥</div>
+            <div class="info">
+                <h3>Players</h3>
+                <span class="number">{{totalPlayers}}</span>
+            </div>
+        </div>
+        <div class="stat-card purple">
+            <div class="icon">📊</div>
+            <div class="info">
+                <h3>Avg Squad</h3>
+                <span class="number">{{avgPlayersPerTeam}}</span>
+            </div>
+        </div>
+        <div class="stat-card gold">
+            <div class="icon">⭐</div>
+            <div class="info">
+                <h3>Top Team</h3>
+                <span class="small-text">{{topTeam?.name || 'N/A'}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <!-- Players List -->
+        <div class="players-section">
+            <h2>⚽ Top Players</h2>
+            <div class="players-mini-list">
+                <div class="player-row" *ngFor="let player of topPlayers">
+                    <img [src]="player.image" class="player-avatar" (error)="player.image='assets/default-player.png'">
+                    <div class="player-info">
+                        <span class="player-name">{{player.name}}</span>
+                        <span class="player-team">{{getTeamName(player.teamId)}}</span>
+                    </div>
+                    <span class="player-pos">{{player.position}}</span>
+                </div>
+                <a routerLink="/players" class="view-all-btn">View All Players →</a>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <!-- Recent Results -->
+            <div class="recent-matches">
+                <h2>📅 Recent Results</h2>
+                <div class="match-list">
+                    <div class="match-item" *ngFor="let m of recentMatches">
+                        <span class="match-teams">{{m.home}} <span class="score">{{m.score}}</span> {{m.away}}</span>
+                        <span class="match-date">{{m.date}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2>⚡ Quick Actions</h2>
+                <button class="action-btn" [routerLink]="['/terrain']">Setup Match</button>
+                <button class="action-btn outline" [routerLink]="['/teams']">Manage Teams</button>
+            </div>
+        </div>
+    </div>
+</div>

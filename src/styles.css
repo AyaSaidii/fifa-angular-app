@@ -1,1 +1,64 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global E-Sports Theme */
+:root {
+    --bg-dark: #0f172a;
+    /* Lighter Midnight Blue */
+    --bg-panel: rgba(30, 41, 59, 0.8);
+    /* Slate Blue transparency */
+    --primary: #38bdf8;
+    /* Sky Blue */
+    --secondary: #818cf8;
+    /* Indigo */
+    --accent: #f472b6;
+    /* Pink */
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: rgba(56, 189, 248, 0.3);
+    --glass: rgba(255, 255, 255, 0.1);
+
+    --font-headers: 'Oswald', sans-serif;
+    /* Strong Headers */
+    --font-body: 'Rajdhani', sans-serif;
+    /* Tech/Game UI */
+    --font-tech: 'Orbitron', sans-serif;
+    /* Futuristic Numbers/Labels */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    overflow-y: auto;
+    /* Enable scrolling */
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Global utility */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-headers);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

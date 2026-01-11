@@ -1,1 +1,16 @@
-<p>terrain-component works!</p>
+<div class="terrain">
+  <div class="field">
+    
+    <div *ngFor="let player of players" 
+         class="player" 
+         [style.left.%]="player.x" 
+         [style.top.%]="player.y">
+         
+      <img [src]="player.image" [alt]="player.name" class="player-image">
+      <div class="player-info">
+        <span class="player-name">{{ player.name }}</span>
+        <span class="player-position">{{ player.position }}</span>
+      </div>
+    </div>
+  </div>
+</div>

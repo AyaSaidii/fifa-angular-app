@@ -1,0 +1,135 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+  padding: 14px 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.logo {
+  color: #00ff88;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.menu {
+  display: flex;
+  gap: 26px;
+}
+
+.menu a {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 15px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+.menu a:hover {
+  background-color: rgba(0, 255, 136, 0.15);
+  color: #00ff88;
+}
+
+/* Page active */
+.menu a.active {
+  background-color: #00ff88;
+  color: #111;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+}
+nav {
+    background: var(--bg-panel);
+    backdrop-filter: blur(10px);
+    padding: 0 40px;
+    height: 90px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-family: var(--font-headers);
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--primary);
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: var(--font-tech);
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 5px 0;
+    display: block;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--text-main);
+    text-shadow: 0 0 8px var(--primary);
+    transform: translateY(-2px);
+}
+
+.nav-links a.active {
+    background: rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.nav-links a.player-db-link {
+    font-size: 0.9rem;
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.sync-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    padding: 5px;
+    filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5));
+}
+
+.sync-btn:hover {
+    transform: rotate(180deg) scale(1.2);
+}

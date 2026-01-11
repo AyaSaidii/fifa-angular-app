@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "name": "Real Madrid",
+    "country": "Spain",
+    "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/86.png",
+    "att": 91,
+    "mid": 89,
+    "def": 85,
+    "players": [],
+    "budget": 200000000
+  },
+  {
+    "id": 2,
+    "name": "FC Barcelona",
+    "country": "Spain",
+    "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/83.png",
+    "att": 87,
+    "mid": 91,
+    "def": 83,
+    "players": [],
+    "budget": 150000000
+  },
+  {
+    "id": 3,
+    "name": "Manchester City",
+    "country": "England",
+    "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/167.png",
+    "att": 93,
+    "mid": 90,
+    "def": 84,
+    "players": [],
+    "budget": 250000000
+  },
+  {
+    "id": 4,
+    "name": "Paris Saint-Germain",
+    "country": "France",
+    "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/160.png",
+    "att": 89,
+    "mid": 85,
+    "def": 81,
+    "players": [],
+    "budget": 300000000
+  },
+  {
+    "id": 5,
+    "name": "Bayern Munich",
+    "country": "Germany",
+    "logo": "https://a.espncdn.com/i/teamlogos/soccer/500/132.png",
+    "att": 88,
+    "mid": 87,
+    "def": 86,
+    "players": [],
+    "budget": 180000000
+  }
+]

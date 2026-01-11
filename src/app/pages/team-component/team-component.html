@@ -1,1 +1,69 @@
-<p>team-component works!</p>
+<div class="teams-page">
+  <div class="header">
+    <h1>My Teams</h1>
+    <button class="add-btn" (click)="openModal()">+ Create Team</button>
+  </div>
+
+  <div class="teams-grid">
+    <div class="team-card" *ngFor="let team of teams">
+      <div class="card-top">
+        <img [src]="team.logo" (error)="team.logo='assets/default-logo.png'" class="team-logo">
+      </div>
+      <div class="card-info">
+        <h2>{{team.name}}</h2>
+        <span class="country-badge">🌍 {{team.country}}</span>
+        <div class="card-stats">
+          <div class="stat">
+            <span class="val">{{team.att || 80}}</span>
+            <span class="lbl">ATT</span>
+          </div>
+          <div class="stat">
+            <span class="val">{{team.mid || 80}}</span>
+            <span class="lbl">MID</span>
+          </div>
+          <div class="stat">
+            <span class="val">{{team.def || 80}}</span>
+            <span class="lbl">DEF</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="view-btn" [routerLink]="['/terrain']" [queryParams]="{teamId: team.id}">Gérer l'équipe</button>
+          <button class="delete-team-btn" (click)="deleteTeam(team.id, $event)">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Team Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>CREATE NEW TEAM</h2>
+        <button class="close-btn" (click)="closeModal()">✕</button>
+      </div>
+
+      <form (submit)="saveTeam()">
+        <div class="form-group">
+          <label>TEAM NAME</label>
+          <input type="text" [(ngModel)]="newTeam.name" name="name" placeholder="Enter team name" required>
+        </div>
+
+        <div class="form-group">
+          <label>COUNTRY</label>
+          <input type="text" [(ngModel)]="newTeam.country" name="country" placeholder="e.g. Spain, England" required>
+        </div>
+
+        <div class="form-group">
+          <label>LOGO URL (OPTIONAL)</label>
+          <input type="text" [(ngModel)]="newTeam.logo" name="logo" placeholder="https://example.com/logo.png">
+          <small>Leave blank for a generated avatar</small>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="cancel-btn" (click)="closeModal()">CANCEL</button>
+          <button type="submit" class="confirm-btn" [disabled]="!newTeam.name || !newTeam.country">CREATE TEAM</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
