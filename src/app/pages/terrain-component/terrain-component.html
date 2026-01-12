@@ -1,16 +1,236 @@
-<div class="terrain">
-  <div class="field">
-    
-    <div *ngFor="let player of players" 
-         class="player" 
-         [style.left.%]="player.x" 
-         [style.top.%]="player.y">
-         
-      <img [src]="player.image" [alt]="player.name" class="player-image">
-      <div class="player-info">
-        <span class="player-name">{{ player.name }}</span>
-        <span class="player-position">{{ player.position }}</span>
+<div class="match-container">
+
+  <!-- Left Side: Squad Bench (Controls) -->
+  <div class="sidebar-controls">
+    <h2><span style="color:var(--text-main)">SQUAD</span> BENCH</h2>
+
+    <!-- Team Selector -->
+    <div class="control-group">
+      <div class="team-header-info">
+        <label>MANAGED TEAM</label>
+        <div class="budget-badge" *ngIf="selectedHomeTeam">
+          <i class="fas fa-wallet"></i> {{selectedHomeTeam.budget | number}}$
+        </div>
+      </div>
+      <select [ngModel]="selectedHomeTeam?.id" (ngModelChange)="selectHomeTeam($event)">
+        <option *ngFor="let team of allTeams" [value]="team.id">
+          {{team.name}}
+        </option>
+      </select>
+    </div>
+
+    <!-- Formation Selector -->
+    <div class="control-group">
+      <label>FORMATION</label>
+      <div class="formation-buttons">
+        <button (click)="setFormation('4-3-3')" [class.active]="selectedFormation==='4-3-3'">4-3-3</button>
+        <button (click)="setFormation('4-4-2')" [class.active]="selectedFormation==='4-4-2'">4-4-2</button>
+        <button (click)="setFormation('3-5-2')" [class.active]="selectedFormation==='3-5-2'">3-5-2</button>
+      </div>
+    </div>
+
+    <!-- Player Search / Recruitment -->
+    <div class="control-group">
+      <label>RECRUIT PLAYERS</label>
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Search by name...">
+        </div>
+
+        <div class="search-results" *ngIf="searchResults.length > 0">
+          <div class="search-item" *ngFor="let p of searchResults">
+            <img [src]="p.image" (error)="p.image='https://a.espncdn.com/i/headshots/nophoto.png'" class="mini-p-img">
+            <div class="s-info">
+              <span class="s-name">{{p.name}}</span>
+              <div class="s-meta">
+                <span class="s-pos">{{p.position}}</span> •
+                <span class="s-price">{{p.price | number}}$</span>
+              </div>
+            </div>
+            <button class="add-to-squad-btn" (click)="addToSquad(p)">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group action-row">
+      <button class="clear-pitch-btn" (click)="clearPitch()">🧹 EMPTY PITCH</button>
+      <button class="reset-data-btn-small" (click)="resetData()" title="Reset App Data">🔄</button>
+    </div>
+    <small style="color: var(--text-muted); font-size: 10px; display: block; margin-top: 5px;">
+      Clear the field to place players manually.
+    </small>
+
+    <!-- Draggable Bench Cards -->
+    <div class="team-roster" *ngIf="selectedHomeTeam">
+      <h3>Active Squad</h3>
+      <div class="roster-list">
+        <!-- Draggable Bench Card -->
+        <div class="bench-card" *ngFor="let player of homePlayers" draggable="true"
+          (dragstart)="onDragStart($event, player)">
+          <img [src]="player.image" (error)="player.image='https://a.espncdn.com/i/headshots/nophoto.png'"
+            class="bench-img">
+          <div class="bench-info">
+            <span class="bench-name">{{player.name}}</span>
+            <span class="bench-pos">{{player.position}}</span>
+          </div>
+          <div class="drag-handle">
+            <i class="fas fa-grip-lines"></i>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+
+  <!-- Right Side: The Pitch (Center Stage) -->
+  <div class="pitch-container">
+    <div class="field" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+      <!-- Field Markings -->
+      <div class="center-circle"></div>
+      <div class="center-line"></div>
+      <div class="penalty-area top"></div>
+      <div class="penalty-area bottom"></div>
+
+      <!-- Ghost Formation Slots (Visual Guide) -->
+      <div *ngFor="let slot of formationSlots" class="ghost-slot" [style.left.%]="slot.x" [style.top.%]="slot.y">
+      </div>
+
+      <!-- Players on Field -->
+      <ng-container *ngFor="let player of homePlayers">
+        <div *ngIf="player.y < 100" class="player-marker" [style.left.%]="player.x" [style.top.%]="player.y"
+          [title]="player.name" draggable="true" (dragstart)="onDragStart($event, player)"
+          (click)="showPlayerCard(player)">
+
+          <div class="player-card-small">
+            <div class="p-img-container">
+              <img [src]="player.image" (error)="player.image = 'https://a.espncdn.com/i/headshots/nophoto.png'"
+                class="p-img">
+            </div>
+            <div class="p-info">
+              <span class="p-name">{{player.name}}</span>
+            </div>
+            <!-- Remove from Field Button -->
+            <button class="remove-btn" (click)="$event.stopPropagation(); moveToBench(player)"
+              title="Remove from Field">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+  <!-- FIFA Player Card Overlay -->
+  <div class="fifa-card-overlay" *ngIf="selectedPlayer" [class.show]="showCard" (click)="closePlayerCard()">
+    <div class="fifa-card" [class.active]="showCard" (click)="$event.stopPropagation()">
+      <div class="card-header">
+        <div class="header-left">
+          <div class="rating">{{selectedPlayer.rating || 75}}</div>
+          <div class="pos">{{selectedPlayer.position}}</div>
+        </div>
+        <div class="player-name">
+          <h2>{{selectedPlayer.name}}</h2>
+        </div>
+      </div>
+
+      <div class="player-img-container">
+        <img [src]="selectedPlayer.image"
+          (error)="selectedPlayer.image = 'https://a.espncdn.com/i/headshots/nophoto.png'" class="full-img">
+      </div>
+
+      <div class="card-stats-grid">
+        <div class="stat-item"><span class="lbl">VIT</span><span class="val">{{selectedPlayer.vit || 75}}</span></div>
+        <div class="stat-item"><span class="lbl">TIR</span><span class="val">{{selectedPlayer.tir || 70}}</span></div>
+        <div class="stat-item"><span class="lbl">PAS</span><span class="val">{{selectedPlayer.pas || 72}}</span></div>
+        <div class="stat-item"><span class="lbl">DRI</span><span class="val">{{selectedPlayer.dri || 74}}</span></div>
+        <div class="stat-item"><span class="lbl">DEF</span><span class="val">{{selectedPlayer.def || 50}}</span></div>
+        <div class="stat-item"><span class="lbl">PHY</span><span class="val">{{selectedPlayer.phy || 70}}</span></div>
+
+        <!-- Action Buttons in Card -->
+        <div class="card-actions">
+          <button class="card-action-btn bench-btn" (click)="moveToBench(selectedPlayer)" title="Move to Bench">
+            <i class="fas fa-undo"></i> Bench
+          </button>
+          <button class="card-action-btn release-btn" (click)="removeFromSquad(selectedPlayer)"
+            title="Release from Squad">
+            <i class="fas fa-trash-alt"></i> Release
+          </button>
+        </div>
+      </div>
+
+      <div class="extra-info">
+        <span class="goal-count">⚽ {{selectedPlayer.goals || 0}} Buts</span>
+        <span class="team-name">{{selectedHomeTeam?.name}}</span>
+      </div>
+
+      <button class="close-card-btn" (click)="closePlayerCard()">✕</button>
+    </div>
+  </div>
+
+  <!-- Transfer Center Modal -->
+  <div class="transfer-modal-overlay" *ngIf="transferPlayer" [class.show]="showTransferModal"
+    (click)="closeTransferModal()">
+    <div class="transfer-modal" [class.active]="showTransferModal" [ngClass]="transferType.toLowerCase()"
+      (click)="$event.stopPropagation()">
+      <div class="modal-glow"></div>
+
+      <div class="modal-header">
+        <i class="fas fa-exchange-alt transfer-icon"></i>
+        <h3>{{transferMessage}}</h3>
+      </div>
+
+      <div class="modal-content">
+        <div class="player-brief" *ngIf="transferPlayer">
+          <img [src]="transferPlayer.image"
+            (error)="transferPlayer.image='https://a.espncdn.com/i/headshots/nophoto.png'" class="brief-img">
+          <div class="brief-info">
+            <span class="p-name">{{transferPlayer.name}}</span>
+            <span class="p-pos">{{transferPlayer.position}}</span>
+          </div>
+        </div>
+
+        <div class="financial-details" *ngIf="transferPlayer">
+          <div class="fin-row">
+            <span>Market Value</span>
+            <span class="price-tag">{{transferPlayer.price | number}}$</span>
+          </div>
+          <div class="fin-row" *ngIf="transferType === 'CONFIRM'">
+            <span>Remaining Budget</span>
+            <span class="budget-tag">{{(selectedHomeTeam?.budget || 0) - (transferPlayer.price || 0) | number}}$</span>
+          </div>
+        </div>
+
+        <div class="modal-message" *ngIf="transferType === 'ERROR'">
+          <i class="fas fa-exclamation-triangle"></i>
+          You do not have enough funds to complete this transaction.
+        </div>
+
+        <div class="modal-message success" *ngIf="transferType === 'SUCCESS'">
+          <i class="fas fa-check-circle"></i>
+          Contract signed! The player is now part of your squad.
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <!-- Confirm Actions -->
+        <ng-container *ngIf="transferType === 'CONFIRM'">
+          <button class="modal-btn cancel-btn" (click)="closeTransferModal()">ABORT</button>
+          <button class="modal-btn confirm-btn" (click)="confirmPurchase()">SIGN CONTRACT</button>
+        </ng-container>
+
+        <!-- Close Actions (for Success/Error) -->
+        <ng-container *ngIf="transferType !== 'CONFIRM'">
+          <button class="modal-btn close-btn" (click)="closeTransferModal()">CLOSE</button>
+        </ng-container>
+      </div>
+
+      <button class="modal-close-x" (click)="closeTransferModal()">✕</button>
+    </div>
+  </div>
+
 </div>
