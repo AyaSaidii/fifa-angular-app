@@ -1,1 +1,121 @@
-<p>matches-component works!</p>
+<div class="matches-page">
+    <div class="matches-header">
+        <h1>Match Center</h1>
+        <div class="total-matches">{{matches.length}} Matches</div>
+    </div>
+
+    <div class="matches-layout">
+        <!-- List Section -->
+        <div class="matches-list" [class.shrunk]="selectedMatch">
+            <div class="match-card" *ngFor="let m of matches" (click)="viewMatchDetails(m)"
+                [class.active]="selectedMatch === m">
+                <div class="card-status">
+                    <span class="date">{{m.date}}</span>
+                    <span class="status-badge">{{m.status}}</span>
+                </div>
+
+                <div class="card-center">
+                    <div class="team home">
+                        <span class="team-name">{{m.homeTeamName}}</span>
+                    </div>
+                    <div class="score-display">
+                        <span class="score home-score" [class.winner]="m.homeScore > m.awayScore">{{m.homeScore}}</span>
+                        <span class="divider">-</span>
+                        <span class="score away-score" [class.winner]="m.awayScore > m.homeScore">{{m.awayScore}}</span>
+                    </div>
+                    <div class="team away">
+                        <span class="team-name">{{m.awayTeamName}}</span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <span class="view-btn">View Analysis</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliding Details Drawer -->
+        <div class="details-drawer" [class.open]="selectedMatch">
+            <div class="drawer-header" *ngIf="selectedMatch">
+                <button class="close-btn" (click)="closeDetails()">
+                    <span class="arrow">→</span> Back
+                </button>
+                <h2>Match Analysis</h2>
+            </div>
+
+            <div class="drawer-content" *ngIf="selectedMatch">
+                <!-- Large Scoreboard -->
+                <div class="drawer-scoreboard">
+                    <div class="team-block">
+                        <div class="team-initial">{{selectedMatch.homeTeamName | slice:0:1}}</div>
+                        <div class="team-name">{{selectedMatch.homeTeamName}}</div>
+                    </div>
+                    <div class="main-score">
+                        {{selectedMatch.homeScore}} - {{selectedMatch.awayScore}}
+                        <span class="ft-label">Full Time</span>
+                    </div>
+                    <div class="team-block">
+                        <div class="team-initial">{{selectedMatch.awayTeamName | slice:0:1}}</div>
+                        <div class="team-name">{{selectedMatch.awayTeamName}}</div>
+                    </div>
+                </div>
+
+                <!-- Scorers -->
+                <div class="stats-section">
+                    <h3><span class="icon">⚽</span> Timeline</h3>
+                    <div class="timeline-container">
+                        <div class="timeline-item home-event" *ngFor="let s of selectedMatch.homeScorers">
+                            <span class="time">{{s.split(' ')[1].replace("'",'')}}'</span>
+                            <span class="event-desc">{{s.split(' ')[0]}}</span>
+                        </div>
+                        <div class="timeline-item away-event" *ngFor="let s of selectedMatch.awayScorers">
+                            <span class="event-desc">{{s.split(' ')[0]}}</span>
+                            <span class="time">{{s.split(' ')[1].replace("'",'')}}'</span>
+                        </div>
+                        <div class="no-events"
+                            *ngIf="selectedMatch.homeScorers.length === 0 && selectedMatch.awayScorers.length === 0">
+                            No major events
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-section" *ngIf="selectedMatch.stats">
+                    <h3><span class="icon">📊</span> Statistics</h3>
+
+                    <div class="stat-group">
+                        <div class="stat-header">
+                            <span>Possession</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar home" [style.width.%]="selectedMatch.stats.possession[0]"></div>
+                            <div class="stat-bar away" [style.width.%]="selectedMatch.stats.possession[1]"></div>
+                        </div>
+                        <div class="stat-values">
+                            <span>{{selectedMatch.stats.possession[0]}}%</span>
+                            <span>{{selectedMatch.stats.possession[1]}}%</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-group">
+                        <div class="stat-header">
+                            <span>Shots on Target</span>
+                        </div>
+                        <div class="stat-bar-container">
+                            <div class="stat-bar home"
+                                [style.width.%]="(selectedMatch.stats.shotsOnTarget[0] / (selectedMatch.stats.shotsOnTarget[0] + selectedMatch.stats.shotsOnTarget[1])) * 100">
+                            </div>
+                            <div class="stat-bar away"
+                                [style.width.%]="(selectedMatch.stats.shotsOnTarget[1] / (selectedMatch.stats.shotsOnTarget[0] + selectedMatch.stats.shotsOnTarget[1])) * 100">
+                            </div>
+                        </div>
+                        <div class="stat-values">
+                            <span>{{selectedMatch.stats.shotsOnTarget[0]}}</span>
+                            <span>{{selectedMatch.stats.shotsOnTarget[1]}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
